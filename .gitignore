@@ -1,0 +1,4 @@
+# Never publish downloaded OAuth or Firebase Admin credentials.
+*client_secret*.json
+*service-account*.json
+*-firebase-adminsdk-*.json
