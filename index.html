@@ -854,7 +854,7 @@ function certClick(){
  viewCert();
 }
 function rr(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()}
-function drawCert(r,name){
+function drawCert(r,name,signature){
  const W=2000,H=1414,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
  const SER='Georgia,"Noto Serif Bengali","Nirmala UI","Times New Roman",serif',SAN='"Segoe UI","Noto Sans Bengali","Nirmala UI",Arial,sans-serif',G='#123f37',G2='#24685a',GOLD='#b18a4a',INK='#25332f',MUTED='#65736d';
  const fit=(t,max,size,fam,wt)=>{do{x.font=wt+' '+size+'px '+fam;size-=2}while(x.measureText(t).width>max&&size>20)};
@@ -889,6 +889,8 @@ function drawCert(r,name){
  box(W/2-290,'TYPING SPEED · WORDS PER MINUTE',String(r.wpm));
  box(W/2+290,'TYPING ACCURACY',r.acc+'%');
  line(340,1118,700,1118,'#aebbb4',2);line(W-700,1118,W-340,1118,'#aebbb4',2);
+ const sigW=220,sigH=sigW*signature.naturalHeight/signature.naturalWidth;
+ x.drawImage(signature,520-sigW/2,1012,sigW,sigH);
  x.textAlign='center';x.fillStyle=G;x.font='bold 30px '+SER;x.fillText('Md. Junaed Hossen Mizi',520,1168);
  x.fillStyle=MUTED;x.font='20px '+SAN;x.fillText('DEVELOPER',520,1200);
  x.fillStyle=MUTED;x.font='20px '+SAN;x.fillText('CERTIFICATE ID',W-520,1154);
@@ -919,6 +921,16 @@ function jpegToPdf(dataUrl,w,h){ // one-page PDF (A4 landscape width) holding th
  return new Blob(parts,{type:'application/pdf'})
 }
 function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
+let certSignaturePromise;
+function loadCertSignature(){
+ if(!certSignaturePromise)certSignaturePromise=new Promise((resolve,reject)=>{
+  const image=new Image();
+  image.onload=()=>resolve(image);
+  image.onerror=()=>reject(new Error('Certificate signature image failed to load'));
+  image.src='my-signature-mj.png';
+ });
+ return certSignaturePromise;
+}
 async function viewCert(){
  document.querySelector('.mc').classList.remove('profile-modal');
  const t=tr(),p=getProf(),r=lastRes;
@@ -927,7 +939,7 @@ async function viewCert(){
  let certError='';
  try{await F.setDoc(F.doc(F.db,'users',U.uid,'certificates',r.id),{id:r.id,name:p.name,lang:r.lang,dur:r.dur,wpm:r.wpm,acc:r.acc,issuedAt:new Date(r.t).toISOString()})}
  catch(e){certError=firebaseText[ui].cloudError;console.error('Firestore certificate save failed',e)}
- const cv=drawCert(r,p.name),url=cv.toDataURL('image/jpeg',.92);
+ const signature=await loadCertSignature(),cv=drawCert(r,p.name,signature),url=cv.toDataURL('image/jpeg',.92);
  $('mb').innerHTML=`<h2>${t.certT}</h2><img src="${url}" alt="" style="width:100%;border:1px solid var(--bd);border-radius:8px"><div class="err">${certError}</div><div style="display:flex;gap:8px;margin-top:12px"><button class="pri cert-download" id="cPdf" style="flex:1">${t.dlPdf}</button><button id="cPng" style="flex:1">${t.dlPng}</button></div><button class="gg" id="cMore">${t.practice}</button>`;
  $('md').hidden=false;
  $('cPdf').onclick=()=>dl(jpegToPdf(url,cv.width,cv.height),'Typing-Certificate-'+r.id+'.pdf');
