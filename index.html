@@ -105,6 +105,9 @@ svg{width:100%;height:auto;display:block}
 .mc label{font-size:13px;color:#355}
 .pri{background:var(--g);color:#fff;border-color:var(--g);width:100%}
 .pri:hover{background:#00563f}
+.cert-download{background:#e32636;color:#fff;border-color:#e32636;font-weight:700;box-shadow:0 4px 12px rgba(227,38,54,.3);transition:background .18s ease,box-shadow .18s ease,transform .18s ease}
+.cert-download:hover{background:#c91f30;border-color:#c91f30;box-shadow:0 6px 16px rgba(201,31,48,.38);transform:translateY(-1px)}
+.cert-download:focus-visible{outline:3px solid rgba(227,38,54,.35);outline-offset:3px}
 .gg{width:100%;margin-top:8px}
 .err{color:#c1121f;font-size:14px;min-height:20px}
 .av{width:96px;height:96px;border-radius:50%;object-fit:cover;border:4px solid var(--g);box-shadow:0 0 0 4px var(--r);display:flex;margin:8px auto 12px;font-size:40px}
@@ -196,7 +199,7 @@ footer{text-align:center;color:#456;font-size:13px;margin:20px 8px}
   <div class="big"><div><span id="rW"></span><small>WPM</small></div><div><span id="rA"></span><small id="lAcc"></small></div></div>
   <div id="msg"></div><div id="gl" style="color:#355;margin:-4px 0 10px"></div>
   <div id="weak"></div><br>
-  <button id="certB" class="pri" style="width:auto;padding:8px 18px;margin-right:8px" hidden></button><button id="again" class="on"></button>
+  <button id="certB" class="cert-download" style="width:auto;padding:8px 18px;margin-right:8px" hidden></button><button id="again" class="on"></button>
  </div>
 
  <section class="card cj" id="cj" hidden>
@@ -925,7 +928,7 @@ async function viewCert(){
  try{await F.setDoc(F.doc(F.db,'users',U.uid,'certificates',r.id),{id:r.id,name:p.name,lang:r.lang,dur:r.dur,wpm:r.wpm,acc:r.acc,issuedAt:new Date(r.t).toISOString()})}
  catch(e){certError=firebaseText[ui].cloudError;console.error('Firestore certificate save failed',e)}
  const cv=drawCert(r,p.name),url=cv.toDataURL('image/jpeg',.92);
- $('mb').innerHTML=`<h2>${t.certT}</h2><img src="${url}" alt="" style="width:100%;border:1px solid var(--bd);border-radius:8px"><div class="err">${certError}</div><div style="display:flex;gap:8px;margin-top:12px"><button class="pri" id="cPdf" style="flex:1">${t.dlPdf}</button><button id="cPng" style="flex:1">${t.dlPng}</button></div><button class="gg" id="cMore">${t.practice}</button>`;
+ $('mb').innerHTML=`<h2>${t.certT}</h2><img src="${url}" alt="" style="width:100%;border:1px solid var(--bd);border-radius:8px"><div class="err">${certError}</div><div style="display:flex;gap:8px;margin-top:12px"><button class="pri cert-download" id="cPdf" style="flex:1">${t.dlPdf}</button><button id="cPng" style="flex:1">${t.dlPng}</button></div><button class="gg" id="cMore">${t.practice}</button>`;
  $('md').hidden=false;
  $('cPdf').onclick=()=>dl(jpegToPdf(url,cv.width,cv.height),'Typing-Certificate-'+r.id+'.pdf');
  $('cPng').onclick=()=>cv.toBlob(b=>dl(b,'Typing-Certificate-'+r.id+'.png'),'image/png');
