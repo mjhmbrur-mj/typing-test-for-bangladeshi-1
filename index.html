@@ -853,32 +853,50 @@ function certClick(){
 function rr(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()}
 function drawCert(r,name){
  const W=2000,H=1414,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
- const SER='Georgia,"Noto Serif Bengali","Nirmala UI","Times New Roman",serif',SAN='"Segoe UI","Noto Sans Bengali","Nirmala UI",Arial,sans-serif',G='#006A4E',R='#F42A41';
- x.fillStyle='#fff';x.fillRect(0,0,W,H);
- x.lineWidth=18;x.strokeStyle=G;x.strokeRect(45,45,W-90,H-90);
- x.lineWidth=5;x.strokeStyle=R;x.strokeRect(75,75,W-150,H-150);
- x.lineWidth=2;x.strokeStyle=G;x.strokeRect(92,92,W-184,H-184);
- [[75,75],[W-75,75],[75,H-75],[W-75,H-75]].forEach(([a,b])=>{x.fillStyle=R;x.beginPath();x.arc(a,b,16,0,7);x.fill();x.fillStyle='#fff';x.beginPath();x.arc(a,b,6,0,7);x.fill()});
- const lg=$('siteLogo'),lh=190,lw=lg.naturalWidth/lg.naturalHeight*lh;x.drawImage(lg,(W-lw)/2,120,lw,lh);
- x.textAlign='center';x.textBaseline='alphabetic';
+ const SER='Georgia,"Noto Serif Bengali","Nirmala UI","Times New Roman",serif',SAN='"Segoe UI","Noto Sans Bengali","Nirmala UI",Arial,sans-serif',G='#123f37',G2='#24685a',GOLD='#b18a4a',INK='#25332f',MUTED='#65736d';
  const fit=(t,max,size,fam,wt)=>{do{x.font=wt+' '+size+'px '+fam;size-=2}while(x.measureText(t).width>max&&size>20)};
- const T1='CERTIFICATE OF TYPING PROFICIENCY';
- x.fillStyle=G;fit(T1,1500,76,SER,'bold');x.fillText(T1,W/2,420);
- x.fillStyle=R;x.font='500 44px '+SER;x.fillText('টাইপিং দক্ষতার সনদপত্র',W/2,486);
- x.fillStyle='#444';x.font='italic 38px '+SER;x.fillText('This is to certify that',W/2,585);
- x.fillStyle='#111';fit(name,1400,112,SER,'bold italic');x.fillText(name,W/2,705);
- x.strokeStyle=R;x.lineWidth=3;x.beginPath();x.moveTo(W/2-520,742);x.lineTo(W/2+520,742);x.stroke();
+ const line=(x1,y1,x2,y2,color,width=2)=>{x.strokeStyle=color;x.lineWidth=width;x.beginPath();x.moveTo(x1,y1);x.lineTo(x2,y2);x.stroke()};
+ x.fillStyle='#fbfaf6';x.fillRect(0,0,W,H);
+ x.fillStyle='rgba(177,138,74,.035)';x.fillRect(104,104,W-208,H-208);
+ x.lineWidth=20;x.strokeStyle=G;x.strokeRect(38,38,W-76,H-76);
+ x.lineWidth=4;x.strokeStyle=GOLD;x.strokeRect(70,70,W-140,H-140);
+ x.lineWidth=1.5;x.strokeStyle='#d9c79f';x.strokeRect(88,88,W-176,H-176);
+ const corner=(cx,cy,sx,sy)=>{x.save();x.translate(cx,cy);x.scale(sx,sy);x.strokeStyle=GOLD;x.lineWidth=3;x.beginPath();x.moveTo(0,85);x.lineTo(0,0);x.lineTo(85,0);x.stroke();x.beginPath();x.moveTo(14,58);x.lineTo(14,14);x.lineTo(58,14);x.stroke();x.fillStyle=GOLD;x.beginPath();x.moveTo(0,0);x.lineTo(12,-5);x.lineTo(18,0);x.lineTo(12,5);x.closePath();x.fill();x.restore()};
+ corner(94,94,1,1);corner(W-94,94,-1,1);corner(94,H-94,1,-1);corner(W-94,H-94,-1,-1);
+ const lg=$('siteLogo'),lh=130,lw=lg.naturalWidth/lg.naturalHeight*lh;x.drawImage(lg,(W-lw)/2,112,lw,lh);
+ x.textAlign='center';x.textBaseline='alphabetic';
+ x.fillStyle=G2;x.font='600 22px '+SAN;x.fillText('TYPING TEST FOR BANGLADESHI',W/2,278);
+ x.fillStyle=G;fit('CERTIFICATE OF TYPING PROFICIENCY',1550,70,SER,'bold');x.fillText('CERTIFICATE OF TYPING PROFICIENCY',W/2,363);
+ line(W/2-115,448,W/2-24,448,GOLD,2);line(W/2+24,448,W/2+115,448,GOLD,2);
+ x.fillStyle=GOLD;x.beginPath();x.moveTo(W/2,440);x.lineTo(W/2+8,448);x.lineTo(W/2,456);x.lineTo(W/2-8,448);x.closePath();x.fill();
+ x.fillStyle=MUTED;x.font='italic 31px '+SER;x.fillText('This certificate is proudly presented to',W/2,516);
+ x.fillStyle=INK;fit(name,1450,92,SER,'bold');x.fillText(name,W/2,620);
+ line(355,650,W-355,650,'#d7c49b',2);
+ x.fillStyle=GOLD;x.beginPath();x.arc(W/2,650,6,0,Math.PI*2);x.fill();
  const mins=r.dur/60,lang=r.lang==='bn'?'Bangla':'English',dt=new Date(r.t).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
- x.fillStyle='#333';x.font='38px '+SER;
- x.fillText('has successfully completed a '+mins+'-minute '+lang+' typing test on '+dt+',',W/2,815);
- x.fillText('achieving the following result:',W/2,868);
- const box=(cx,label,val,col)=>{x.lineWidth=5;x.strokeStyle=col;x.fillStyle='#f6faf8';rr(x,cx-210,920,420,230,26);x.fill();x.stroke();x.fillStyle=col;x.font='bold 116px '+SAN;x.fillText(val,cx,1048);x.fillStyle='#444';x.font='600 32px '+SAN;x.fillText(label,cx,1108)};
- box(W/2-260,'SPEED (WPM)',String(r.wpm),G);box(W/2+260,'ACCURACY',r.acc+'%',R);
- x.strokeStyle='#999';x.lineWidth=2;x.beginPath();x.moveTo(230,1235);x.lineTo(700,1235);x.moveTo(W-700,1235);x.lineTo(W-230,1235);x.stroke();
- x.fillStyle='#333';x.font='30px '+SAN;x.fillText(dt,465,1218);
- x.fillStyle='#666';x.font='26px '+SAN;x.fillText('Date of test',465,1276);x.fillText('Developer, Typing Test for Bangladeshi',W-465,1276);
- x.fillStyle=G;x.font='italic bold 40px '+SER;x.fillText('Md. Junaed Hossen Mizi',W-465,1218);
- x.fillStyle='#555';x.font='26px '+SAN;x.fillText('Certificate ID: '+r.id,W/2,1276);
+ x.fillStyle=INK;x.font='30px '+SER;x.fillText('for successfully completing a '+mins+'-minute '+lang+' typing test',W/2,710);
+ x.fillStyle=MUTED;x.font='25px '+SAN;x.fillText('Issued on '+dt,W/2,754);
+ const box=(cx,label,val)=>{
+  const bw=535,bh=190,by=810;
+  rr(x,cx-bw/2,by,bw,bh,20);x.fillStyle='#fff';x.fill();x.strokeStyle='#e2d8c3';x.lineWidth=2;x.stroke();
+  x.fillStyle=GOLD;x.fillRect(cx-bw/2,by,7,bh);
+  x.textAlign='center';x.fillStyle=MUTED;x.font='700 21px '+SAN;x.fillText(label,cx,by+48);
+  x.fillStyle=G;fit(val,bw-70,92,SAN,'bold');x.fillText(val,cx,by+139);
+ };
+ box(W/2-290,'TYPING SPEED · WORDS PER MINUTE',String(r.wpm));
+ box(W/2+290,'TYPING ACCURACY',r.acc+'%');
+ line(340,1118,700,1118,'#aebbb4',2);line(W-700,1118,W-340,1118,'#aebbb4',2);
+ x.textAlign='center';x.fillStyle=G;x.font='bold 30px '+SER;x.fillText('Md. Junaed Hossen Mizi',520,1168);
+ x.fillStyle=MUTED;x.font='20px '+SAN;x.fillText('DEVELOPER',520,1200);
+ x.fillStyle=MUTED;x.font='20px '+SAN;x.fillText('CERTIFICATE ID',W-520,1154);
+ x.fillStyle=INK;x.font='600 22px '+SAN;x.fillText(String(r.id),W-520,1188);
+ x.textAlign='center';x.fillStyle='#fff';x.beginPath();x.arc(W/2,1150,52,0,Math.PI*2);x.fill();
+ x.strokeStyle=GOLD;x.lineWidth=3;x.beginPath();x.arc(W/2,1150,49,0,Math.PI*2);x.stroke();
+ x.lineWidth=1;x.beginPath();x.arc(W/2,1150,41,0,Math.PI*2);x.stroke();
+ x.fillStyle=GOLD;x.font='bold 15px '+SAN;x.fillText('TYPING',W/2,1145);
+ x.font='14px '+SAN;x.fillText('PROFICIENCY',W/2,1167);
+ line(250,1260,W-250,1260,'#e1d7c4',1);
+ x.fillStyle=MUTED;x.font='18px '+SAN;x.fillText('Typing Test for Bangladeshi  ·  Certificate of Typing Proficiency',W/2,1295);
  return c
 }
 function newCertId(){return'TT-'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+Array.from(crypto.getRandomValues(new Uint8Array(4)),b=>b.toString(16).padStart(2,'0')).join('').toUpperCase()}
