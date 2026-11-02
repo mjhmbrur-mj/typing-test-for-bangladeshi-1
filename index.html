@@ -71,6 +71,13 @@ button.on{background:var(--g);color:#fff;border-color:var(--g)}
 .big div:last-child{color:var(--r)}
 .big small{display:block;font-size:14px;font-weight:400;color:#555}
 #msg{margin:12px 0;font-size:19px;color:#133}
+.session-chart{max-width:820px;margin:18px auto 8px;padding:14px 16px 8px;text-align:left;background:#f7fbf9;border:1px solid #dfe9e4;border-radius:14px}
+.session-chart-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px}
+.session-chart h2{margin:0;color:var(--g);font-size:18px}
+.session-legend{display:flex;flex-wrap:wrap;gap:14px;color:#455;font-size:13px}
+.session-legend span{display:inline-flex;align-items:center;gap:6px}
+.session-legend i{width:18px;height:4px;border-radius:4px}
+#sessionGraph{width:100%;height:auto}
 #prog{padding:16px;margin-top:16px}
 #prog h2{margin:0 0 4px;font-size:18px;color:var(--g)}
 .leg{font-size:13px;color:#444;margin:4px 0}
@@ -198,6 +205,10 @@ footer{text-align:center;color:#456;font-size:13px;margin:20px 8px}
  <div id="res" class="card">
   <div class="big"><div><span id="rW"></span><small>WPM</small></div><div><span id="rA"></span><small id="lAcc"></small></div></div>
   <div id="msg"></div><div id="gl" style="color:#355;margin:-4px 0 10px"></div>
+  <div class="session-chart" aria-labelledby="runChartTitle">
+   <div class="session-chart-head"><h2 id="runChartTitle"></h2><div class="session-legend"><span><i style="background:#006A4E"></i>WPM</span><span><i style="background:#F42A41"></i><span id="runAccLabel"></span></span></div></div>
+   <svg id="sessionGraph" viewBox="0 0 800 260" role="img" aria-labelledby="runChartTitle"></svg>
+  </div>
   <div id="weak"></div><br>
   <button id="certB" class="cert-download" style="width:auto;padding:8px 18px;margin-right:8px" hidden></button><button id="again" class="on"></button>
  </div>
@@ -517,6 +528,7 @@ function synth(kind){
 /* ---------- test flow ---------- */
 function setIdle(){
  clearInterval(tick);started=false;done=false;prev=0;prevCur=0;TR=newTrack();INC=makeInc();lastVal='';paused=false;base=0;setPause(false);curSpan=null;lastK=-1;lastTop=-1;
+ runSamples=[];runSnapshot={chars:0,acc:0};nextRunSample=5;
  const ta=$('in');ta.value='';ta.disabled=true;
  updateBanglaPreview();
  $('res').style.display='none';$('ov').style.display='flex';$('box').classList.add('idle');
@@ -526,17 +538,25 @@ function setIdle(){
 function begin(){
  if(started||done)return;
  started=true;{const n=Date.now();base=0;segStart=n;lastIn=n;paused=false;setPause(false)}
+ runSamples=[{seconds:0,wpm:0,acc:0}];runSnapshot={chars:0,acc:0};nextRunSample=5;
  $('ov').style.display='none';$('box').classList.remove('idle');
  loadKeys();const ta=$('in');ta.disabled=false;ta.focus();
  updateBanglaPreview(ta.value);
  tick=setInterval(()=>{ /* time only runs while the user is typing: after 3 s of no typing it pauses, and resumes by itself on the next key */
   const n=Date.now();
   if(!paused&&n-lastIn>3000){base+=lastIn-segStart;paused=true;setPause(true)}
-  const left=dur-(paused?base:base+(n-segStart))/1000;showTime(left);if(left<=0)finish()},100);
+  const elapsed=paused?base:base+(n-segStart),left=dur-elapsed/1000;
+  if(elapsed>=nextRunSample*1000){captureRunSample(Math.min(dur,elapsed/1000));nextRunSample=Math.floor(elapsed/5000+1)*5}
+  showTime(left);if(left<=0)finish()},100);
 }
 function showTime(s){s=Math.max(0,Math.ceil(s));$('time').textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
 
-let lastVal='',base=0,segStart=0,lastIn=0,paused=false;
+let lastVal='',base=0,segStart=0,lastIn=0,paused=false,runSamples=[],runSnapshot={chars:0,acc:0},nextRunSample=5;
+function captureRunSample(seconds){
+ const last=runSamples[runSamples.length-1];
+ if(last&&seconds<=last.seconds)return;
+ runSamples.push({seconds,wpm:seconds?Math.round(runSnapshot.chars/5/(seconds/60)):0,acc:runSnapshot.acc});
+}
 function updateBanglaPreview(value=''){
  const visible=tl==='bn'&&started&&!done;
  $('bnPreview').hidden=!visible;
@@ -572,6 +592,7 @@ function handle(enforce){
  updateBanglaPreview(val);
  prev=L;if(enforce)lastVal=val;
  const ev=evalInc(P,val,false,TR,tl==='bn',INC);
+ runSnapshot={chars:cps(nz(val)).length,acc:score(ev.out,ev.cur,TR).acc};
  if(ev.cur>=P.length-25)addWords(gen(tl,40,Math.floor(Math.random()*1e9))); // new paragraph well before the last word
  paint(ev);       // screen first ...
  if(dir)snd(dir); // ... then the sound
@@ -587,6 +608,8 @@ function finish(){
  const val=$('in').value.replace(/\u00a0/g,' '),ev=evalInc(P,val,true,TR,false,INC),sc=score(ev.out,ev.cur,TR);
  /* typing.com method: WPM = (all characters typed / 5) / minutes, errors do not reduce it; accuracy = correct entries / all entries */
  const wpm=Math.round(cps(nz(val)).length/5/(dur/60)),acc=sc.acc;
+ runSamples=runSamples.filter(x=>x.seconds<dur);
+ runSamples.push({seconds:dur,wpm,acc});
  $('rW').textContent=wpm;$('rA').textContent=acc+'%';
  const t=tr(),pool=wpm>40?t.good:wpm<20?t.low:t.mid;
  $('msg').textContent=pool[Math.floor(Math.random()*pool.length)];
@@ -596,7 +619,28 @@ function finish(){
  lastRes={wpm,acc,dur,lang:tl,t:Date.now(),id:null};$('certB').hidden=wpm<1;
  const key=hkey(tl),h=ls(key,[]);h.push({wpm,acc,dur,t:Date.now()});sv(key,h.slice(-100));syncCloud();
  const gp=getProf();$('gl').textContent=(U||LP)&&gp.goal?(wpm>=gp.goal?tr().goalOk:tr().goalTo.replace('{n}',gp.goal-wpm)):'';
- drawGraph();$('res').scrollIntoView({behavior:'smooth',block:'nearest'});
+ drawGraph();drawRunGraph();$('res').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function drawRunGraph(){
+ const svg=$('sessionGraph'),W=800,H=260,L=48,R=48,Tp=18,Bt=38;
+ const samples=runSamples.length?runSamples:[{seconds:0,wpm:0,acc:0}];
+ const maxWpm=Math.max(10,Math.ceil(Math.max(...samples.map(x=>x.wpm))*1.15/5)*5);
+ const X=s=>L+s/dur*(W-L-R),Yw=v=>H-Bt-v/maxWpm*(H-Tp-Bt),Ya=v=>H-Bt-v/100*(H-Tp-Bt);
+ const timeLabel=s=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
+ let markup='';
+ for(let k=0;k<=4;k++){
+  const y=Tp+k*(H-Tp-Bt)/4;
+  markup+=`<line x1="${L}" y1="${y}" x2="${W-R}" y2="${y}" stroke="#e3e9e6"/><text x="${L-8}" y="${y+4}" text-anchor="end" font-size="12" fill="#006A4E">${Math.round(maxWpm*(1-k/4))}</text><text x="${W-R+8}" y="${y+4}" font-size="12" fill="#F42A41">${100-k*25}%</text>`;
+ }
+ for(let k=0;k<=4;k++){
+  const seconds=dur*k/4,x=X(seconds);
+  markup+=`<line x1="${x}" y1="${Tp}" x2="${x}" y2="${H-Bt}" stroke="#eef2ef"/><text x="${x}" y="${H-10}" text-anchor="middle" font-size="12" fill="#567">${timeLabel(seconds)}</text>`;
+ }
+ markup+=`<polyline fill="none" stroke="#006A4E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="${samples.map(x=>X(x.seconds)+','+Yw(x.wpm)).join(' ')}"/>`;
+ markup+=`<polyline fill="none" stroke="#F42A41" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="${samples.map(x=>X(x.seconds)+','+Ya(x.acc)).join(' ')}"/>`;
+ markup+=samples.map(x=>`<circle cx="${X(x.seconds)}" cy="${Yw(x.wpm)}" r="4" fill="#006A4E"><title>${timeLabel(x.seconds)}: ${x.wpm} WPM, ${x.acc}%</title></circle><circle cx="${X(x.seconds)}" cy="${Ya(x.acc)}" r="4" fill="#F42A41"><title>${timeLabel(x.seconds)}: ${x.wpm} WPM, ${x.acc}%</title></circle>`).join('');
+ svg.innerHTML=markup;
 }
 
 /* ---------- graph: WPM + accuracy, per language ---------- */
@@ -952,7 +996,7 @@ $('certB').onclick=certClick;
 function applyUI(){
  const t=tr();document.documentElement.lang=ui;
  $('tag').textContent=t.tag;$('devT').textContent=t.dev;$('devM').textContent=t.mail;$('copy').textContent='© '+new Date().getFullYear()+' Md. Junaed Hossen Mizi. '+t.rights;$('lTyp').textContent=t.typ;$('rst').textContent=t.rst;$('start').textContent=t.start;$('sh').textContent=t.sh;
- $('lAcc').textContent=t.acc;$('again').textContent=t.again;$('foot').textContent=t.foot;$('snd').textContent=mute?t.sndOff:t.sndOn;
+ $('lAcc').textContent=t.acc;$('runAccLabel').textContent=t.acc;$('runChartTitle').textContent=ui==='bn'?'এই টেস্টের টাইপিং অগ্রগতি':'Typing performance during this test';$('again').textContent=t.again;$('foot').textContent=t.foot;$('snd').textContent=mute?t.sndOff:t.sndOn;
  document.querySelectorAll('[data-d]').forEach(b=>{b.textContent=(b.dataset.d/60)+' '+t.min;b.classList.toggle('on',+b.dataset.d===dur)});
  $('uiBn').classList.toggle('on',ui==='bn');$('uiEn').classList.toggle('on',ui==='en');
  $('tlBn').classList.toggle('on',tl==='bn');$('tlEn').classList.toggle('on',tl==='en');
