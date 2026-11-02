@@ -188,7 +188,7 @@ footer{text-align:center;color:#456;font-size:13px;margin:20px 8px}
  <div class="card ctl">
   <b id="lTyp"></b>
   <span class="seg"><button id="tlBn">বাংলা</button><button id="tlEn">English</button></span>
-  <span class="seg"><button data-d="60"></button><button data-d="180"></button><button data-d="300"></button></span>
+  <span class="seg"><button data-d="10"></button><button data-d="60"></button><button data-d="180"></button><button data-d="300"></button></span>
   <span class="sp"></span>
   <span class="stat" id="time">1:00</span>
   <button id="rst"></button>
@@ -338,7 +338,7 @@ en:[
 "The festival of Pohela Boishakh fills the streets with music, color, and sweet food.",
 "Whoever learns from a mistake is already wiser than the person who never tries.",
 "Great typists are not born; they are made by patience, rhythm, and daily practice."]};
-const WORDS={60:100,180:300,300:500};
+const WORDS={10:25,60:100,180:300,300:500};
 const T={
 bn:{tag:"বিনামূল্যে টাইপিং অনুশীলন, কোনো লগইন ছাড়াই",dev:"ডেভেলপার তথ্য",mail:"ইমেইল করুন",rights:"সর্বস্বত্ব সংরক্ষিত।",confirm:"আপনার ইমেইলে একটি নিশ্চিতকরণ লিংক পাঠানো হয়েছে। লিংকে ক্লিক করে অ্যাকাউন্ট চালু করুন।",eConf:"আগে ইমেইল নিশ্চিত করুন (ইনবক্স দেখুন)।",newPw:"নতুন পাসওয়ার্ড লিখুন (কমপক্ষে ৬ অক্ষর):",pwDone:"পাসওয়ার্ড পরিবর্তন হয়েছে।",google:"Google দিয়ে চালিয়ে যান",pause:"⏸ বিরতি – টাইপ করলেই আবার চলবে",cert:"🎓 সার্টিফিকেট ডাউনলোড",needLogin:"সার্টিফিকেট পেতে প্রথমে একটি অ্যাকাউন্ট খুলুন বা সাইন ইন করুন। সার্টিফিকেট আপনার অ্যাকাউন্টের নামেই দেওয়া হবে।",needName:"সার্টিফিকেটে ছাপার জন্য নিচে আপনার নাম লিখে সংরক্ষণ করুন।",certT:"আপনার সার্টিফিকেট",dlPdf:"PDF ডাউনলোড",dlPng:"ছবি (PNG) ডাউনলোড",practice:"আরও অনুশীলন করুন",soon:"ইমেইল দিয়ে লগইন শীঘ্রই চালু হচ্ছে। এখনকার জন্য এই ডিভাইসে প্রোফাইল ব্যবহার করতে পারেন।",login:"লগইন / প্রোফাইল",prof:"প্রোফাইল",optional:"লগইন সম্পূর্ণ ঐচ্ছিক – লগইন ছাড়াও অনুশীলন করা যায়। লগইন করলে আপনার সব রেকর্ড প্রোফাইলে জমা থাকবে।",tabIn:"সাইন ইন",tabUp:"অ্যাকাউন্ট খুলুন",email:"ইমেইল",pass:"পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)",nameL:"আপনার নাম",forgot:"পাসওয়ার্ড ভুলে গেছেন?",or:"অথবা",devProf:"এই ডিভাইসে প্রোফাইল তৈরি করুন",devNote:"ইন্টারনেট ছাড়াই কাজ করে; রেকর্ড শুধু এই ব্রাউজারে থাকবে।",about:"আপনার সম্পর্কে (সংক্ষেপে)",goal:"লক্ষ্য WPM",photo:"ছবি পরিবর্তন",save:"সংরক্ষণ করুন",saved:"সংরক্ষিত হয়েছে ✓",out:"সাইন আউট",clr:"রেকর্ড মুছুন",clrQ:"আপনার সব রেকর্ড মুছে যাবে। নিশ্চিত?",sTests:"মোট টেস্ট",sBest:"সেরা WPM",sAvg:"গড় WPM",sAcc:"গড় নির্ভুলতা",sMin:"অনুশীলন (মিনিট)",goalOk:"🎯 লক্ষ্য পূরণ হয়েছে!",goalTo:"লক্ষ্য থেকে আর {n} WPM বাকি",copy:"ইমেইল কপি করুন",copied:"কপি হয়েছে ✓",eCred:"ইমেইল বা পাসওয়ার্ড সঠিক নয়।",eUsed:"এই ইমেইল দিয়ে আগেই অ্যাকাউন্ট খোলা হয়েছে।",eWeak:"পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।",eMail:"ইমেইল ঠিকানাটি সঠিক নয়।",eGen:"কিছু ভুল হয়েছে, আবার চেষ্টা করুন।",reset:"পাসওয়ার্ড রিসেট লিংক ইমেইলে পাঠানো হয়েছে।",typ:"টাইপের ভাষা:",rst:"নতুন অনুচ্ছেদ",start:"শুরু করুন",sh:"Enter চাপলেও শুরু হবে",acc:"নির্ভুলতা",weak:"দুর্বল কী (লক্ষ্য ← যা টাইপ হয়েছে):",none:"কোনো দুর্বল কী নেই 🎉",again:"আবার চেষ্টা করুন",prog:"আপনার অগ্রগতি – বাংলা (শেষ ১০০টি)",avg:"গড়",best:"সেরা",nodata:"এখনো কোনো রেকর্ড নেই",sndOn:"🔊 শব্দ চালু",sndOff:"🔇 শব্দ বন্ধ",foot:"বাংলা টাইপ করতে আপনার ডিভাইসে বাংলা কিবোর্ড (অভ্র/বিজয়) চালু রাখুন। ফোনে শব্দ-পরামর্শ (predictive text) বন্ধ রাখলে ভালো হয়।",min:"মিনিট",
 good:["অসাধারণ! আপনি দারুণ করেছেন, অভিনন্দন! 🎉","চমৎকার গতি! এভাবেই এগিয়ে যান।","দুর্দান্ত! আপনি সত্যিই দক্ষ টাইপিস্ট হয়ে উঠছেন।"],
@@ -349,6 +349,7 @@ good:["Excellent work! Congratulations, great speed! 🎉","Fantastic! You are b
 mid:["Good effort! Carry on, you are improving.","A little more practice and your speed will climb.","Keep going, you get better every day."],
 low:["Don't give up! Daily practice will surely make you faster.","Everyone starts slow. Keep trying, you can do it!","Mistakes are how we learn. Try again, you've got this!"]}};
 
+const shortSeconds={bn:'সেকেন্ড',en:'sec'};
 const $=id=>document.getElementById(id);
 const ls=(k,d)=>{try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}};
 const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
@@ -656,7 +657,7 @@ function drawGraph(){
   s+=`<line x1="${L}" y1="${y}" x2="${W-R}" y2="${y}" stroke="#e3e9e6"/><text x="${L-6}" y="${y+4}" text-anchor="end" font-size="12" fill="#006A4E">${Math.round(mx*(1-k/4))}</text><text x="${W-R+6}" y="${y+4}" font-size="12" fill="#F42A41">${100-k*25}%</text>`}
  s+=`<polyline fill="none" stroke="#006A4E" stroke-width="2.5" points="${h.map((x,i)=>X(i)+','+Yw(x.wpm)).join(' ')}"/>`;
  s+=`<polyline fill="none" stroke="#F42A41" stroke-width="2.5" points="${h.map((x,i)=>X(i)+','+Ya(x.acc)).join(' ')}"/>`;
- s+=h.map((x,i)=>`<circle cx="${X(i)}" cy="${Yw(x.wpm)}" r="3.5" fill="#006A4E"><title>#${i+1}: ${x.wpm} WPM, ${x.acc}% (${x.dur/60} ${t.min})</title></circle><circle cx="${X(i)}" cy="${Ya(x.acc)}" r="3.5" fill="#F42A41"><title>#${i+1}: ${x.wpm} WPM, ${x.acc}% (${x.dur/60} ${t.min})</title></circle>`).join('');
+ s+=h.map((x,i)=>`<circle cx="${X(i)}" cy="${Yw(x.wpm)}" r="3.5" fill="#006A4E"><title>#${i+1}: ${x.wpm} WPM, ${x.acc}% (${x.dur<60?x.dur+' '+shortSeconds[ui]:x.dur/60+' '+t.min})</title></circle><circle cx="${X(i)}" cy="${Ya(x.acc)}" r="3.5" fill="#F42A41"><title>#${i+1}: ${x.wpm} WPM, ${x.acc}% (${x.dur<60?x.dur+' '+shortSeconds[ui]:x.dur/60+' '+t.min})</title></circle>`).join('');
  g.innerHTML=s;
  const avg=Math.round(h.reduce((a,x)=>a+x.wpm,0)/h.length);
  $('sum').textContent=`${t.avg}: ${avg} WPM · ${t.best}: ${Math.max(...h.map(x=>x.wpm))} WPM · ${h.length}`;
@@ -920,8 +921,8 @@ function drawCert(r,name,signature){
  x.fillStyle=INK;fit(name,1450,92,SER,'bold');x.fillText(name,W/2,620);
  line(355,650,W-355,650,'#d7c49b',2);
  x.fillStyle=GOLD;x.beginPath();x.arc(W/2,650,6,0,Math.PI*2);x.fill();
- const mins=r.dur/60,lang=r.lang==='bn'?'Bangla':'English',dt=new Date(r.t).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
- x.fillStyle=INK;x.font='30px '+SER;x.fillText('for successfully completing a '+mins+'-minute '+lang+' typing test',W/2,710);
+ const mins=r.dur/60,lang=r.lang==='bn'?'Bangla':'English',durationLabel=r.dur<60?r.dur+'-second':mins+'-minute',dt=new Date(r.t).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+ x.fillStyle=INK;x.font='30px '+SER;x.fillText('for successfully completing a '+durationLabel+' '+lang+' typing test',W/2,710);
  x.fillStyle=MUTED;x.font='25px '+SAN;x.fillText('Issued on '+dt,W/2,754);
  const box=(cx,label,val)=>{
   const bw=535,bh=190,by=810;
@@ -997,7 +998,7 @@ function applyUI(){
  const t=tr();document.documentElement.lang=ui;
  $('tag').textContent=t.tag;$('devT').textContent=t.dev;$('devM').textContent=t.mail;$('copy').textContent='© '+new Date().getFullYear()+' Md. Junaed Hossen Mizi. '+t.rights;$('lTyp').textContent=t.typ;$('rst').textContent=t.rst;$('start').textContent=t.start;$('sh').textContent=t.sh;
  $('lAcc').textContent=t.acc;$('runAccLabel').textContent=t.acc;$('runChartTitle').textContent=ui==='bn'?'এই টেস্টের টাইপিং অগ্রগতি':'Typing performance during this test';$('again').textContent=t.again;$('foot').textContent=t.foot;$('snd').textContent=mute?t.sndOff:t.sndOn;
- document.querySelectorAll('[data-d]').forEach(b=>{b.textContent=(b.dataset.d/60)+' '+t.min;b.classList.toggle('on',+b.dataset.d===dur)});
+ document.querySelectorAll('[data-d]').forEach(b=>{const seconds=+b.dataset.d;b.textContent=seconds<60?seconds+' '+shortSeconds[ui]:seconds/60+' '+t.min;b.classList.toggle('on',seconds===dur)});
  $('uiBn').classList.toggle('on',ui==='bn');$('uiEn').classList.toggle('on',ui==='en');
  $('tlBn').classList.toggle('on',tl==='bn');$('tlEn').classList.toggle('on',tl==='en');
  $('mCopy').textContent=t.copy;$('certB').textContent=t.cert;$('pz').textContent=t.pause;$('cj').hidden=tl!=='bn';refreshAcc();if(!$('md').hidden)renderM();
